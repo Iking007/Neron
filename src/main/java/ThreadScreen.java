@@ -29,7 +29,7 @@ public class ThreadScreen implements Runnable{
         nu.pattern.OpenCV.loadLocally();
         Rectangle sizeScreen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         sizeScreen.setSize(840,480);
-        CascadeClassifier cascadeClassifier = new CascadeClassifier("src\\main\\resources\\cascade(512 1900 11 0.3).xml");
+        CascadeClassifier cascadeClassifier = new CascadeClassifier("src\\main\\resources\\cascade(401 1436 16 0.4).xml");
         Robot robot = null;
         try {
             robot = new Robot();
@@ -67,13 +67,13 @@ public class ThreadScreen implements Runnable{
                 Core.inRange(frameGray,oneScalar,twoScalar, frameGray);
 
                 Imgproc.findContours(frameGray, contours, frameGray, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-//                if (!contours.isEmpty()) {
-//                    for (int i = 0; i < contours.size(); ++i) {
-//                        ch=Imgproc.boundingRect(contours.get(i));
-//                        Imgproc.rectangle(img, ch.br(), ch.tl(), colorMe, 0);
-//                    }
-//
-//                }
+                if (!contours.isEmpty()) {
+                    for (int i = 0; i < contours.size(); ++i) {
+                        ch=Imgproc.boundingRect(contours.get(i));
+                        Imgproc.rectangle(img, ch.br(), ch.tl(), colorMe, 0);
+                    }
+
+                }
 
 //                if (!contours.isEmpty()) {
 //                    Imgproc.drawContours(img, contours.stream().toList(), 0, new Scalar(255, 0, 255),3);
@@ -90,12 +90,16 @@ public class ThreadScreen implements Runnable{
 
                 //cascadeClassifier.detectMultiScale(img, s);
 
-                cascadeClassifier.detectMultiScale(img, s,1.1, 1,1, new Size(25,25),new Size(50, 50) );
+                cascadeClassifier.detectMultiScale(img, s,1.2, 1,16, new Size(25,25),new Size(55, 55) );
                 for (Rect t : MinRectangles(s.toList())) {
                     onePoint = new Point(t.x - t.height/2, t.y - t.width/ 2);
                     twoPoint = new Point(t.x + t.height/ 2 , t.y + t.width/ 2);
                     Imgproc.rectangle(img, onePoint, twoPoint, colorRect, 0);
                     //System.out.println(ch.x +"  "+ t.x);
+                    java.awt.Point mouse = MouseInfo.getPointerInfo().getLocation();
+                    // Движение за целью
+                    if (mouse.x + 20 > t.x & mouse.y + 20 > t.y & mouse.x - 20 < t.x & mouse.y - 20 < t.y)
+                        robot.mouseMove(t.x , t.y);
                     if(key & ((ch.x + 30 < t.x | ch.x - 30 > t.x) & (ch.y + 30 < t.y | ch.y - 30 > t.y))){
                         robot.mouseMove(t.x , t.y);
                         new Thread(fireThread).start();
@@ -103,8 +107,7 @@ public class ThreadScreen implements Runnable{
                 }
                 ThreadSetLab threadSetLab = new ThreadSetLab(new ImageIcon(Mat2BufferedImage(img)));
                 new Thread(threadSetLab).start();
-                //labelS.setLabel(new ImageIcon(Mat2BufferedImage(img)));
-                //labelS.setLabel(new ImageIcon(ins));
+                //labelS.setLabel(ы
                 new Thread(new ThreadTimer()).start();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -143,7 +146,7 @@ public class ThreadScreen implements Runnable{
             }
         }
         if (rects.size() > recs.size())
-            System.out.println("ДО: " + rects.size() + " после: "+ recs.size());
+            System.out.println("До: " + rects.size() + " после: "+ recs.size());
         return recs;
     }
 }
