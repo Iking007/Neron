@@ -16,7 +16,9 @@ public class FireThread implements Runnable{
         assert robot != null;
         robot.mousePress(InputEvent.BUTTON1_MASK);
         try {
+            Main.threadScreen.key = false;
             Thread.sleep(500);
+            Main.threadScreen.key = true;
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
