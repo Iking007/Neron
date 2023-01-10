@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -8,11 +7,14 @@ import java.awt.event.KeyListener;
  * @author Pavel
  */
 public class Main {
+    // Нейронка для игры из стим CS2D
     static  JLabel label = new JLabel();
     static JFrame window = new JFrame("Неронка");
     static int fps = 0;
+    // ДЛя потоков нейронки
     static LabelS labelS = new LabelS(2);
     static ThreadScreen threadScreen = new ThreadScreen(labelS);
+    // Для разрешения нейронке стрелять по противникам
     static KeyListener keyListener = new KeyListener() {
         @Override
         public void keyTyped(KeyEvent e) {
@@ -44,6 +46,7 @@ public class Main {
         window.addKeyListener(keyListener);
         Thread thread0 = new Thread(threadScreen);
         Thread thread1 = new Thread(threadScreen);
+        // Потоки нейронки
         thread0.start();
         thread1.start();
 

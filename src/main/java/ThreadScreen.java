@@ -1,8 +1,10 @@
+import nu.pattern.OpenCV;
 import org.opencv.core.*;
 import org.opencv.core.Point;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
+import org.opencv.objdetect.Objdetect;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -29,7 +31,7 @@ public class ThreadScreen implements Runnable{
         nu.pattern.OpenCV.loadLocally();
         Rectangle sizeScreen = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
         sizeScreen.setSize(840,480);
-        CascadeClassifier cascadeClassifier = new CascadeClassifier("src\\main\\resources\\cascade(401 1436 16 0.4).xml");
+        CascadeClassifier cascadeClassifier = new CascadeClassifier("src\\main\\resources\\cascade(659 1942 0.4).xml");
         Robot robot = null;
         try {
             robot = new Robot();
@@ -90,8 +92,9 @@ public class ThreadScreen implements Runnable{
 
                 //cascadeClassifier.detectMultiScale(img, s);
 
-                cascadeClassifier.detectMultiScale(img, s,1.2, 1,16, new Size(25,25),new Size(55, 55) );
-                for (Rect t : MinRectangles(s.toList())) {
+                cascadeClassifier.detectMultiScale(img, s,1.1, 3, Objdetect.CASCADE_SCALE_IMAGE,
+                        new Size(25,25),new Size(45, 45) );
+                for (Rect t : s.toList()) {
                     onePoint = new Point(t.x - t.height/2, t.y - t.width/ 2);
                     twoPoint = new Point(t.x + t.height/ 2 , t.y + t.width/ 2);
                     Imgproc.rectangle(img, onePoint, twoPoint, colorRect, 0);
@@ -100,7 +103,7 @@ public class ThreadScreen implements Runnable{
                     // Движение за целью
                     if (mouse.x + 20 > t.x & mouse.y + 20 > t.y & mouse.x - 20 < t.x & mouse.y - 20 < t.y)
                         robot.mouseMove(t.x , t.y);
-                    if(key & ((ch.x + 30 < t.x | ch.x - 30 > t.x) & (ch.y + 30 < t.y | ch.y - 30 > t.y))){
+                    if(key & ((ch.x + 20 < t.x | ch.x - 20 > t.x) & (ch.y + 20 < t.y | ch.y - 20 > t.y))){
                         robot.mouseMove(t.x , t.y);
                         new Thread(fireThread).start();
                     }
